@@ -128,7 +128,7 @@ def number_of_color():
         byte = file1.read(1)
         file2.write(byte)
 
-        a = random.randint(0, 900)
+        a = random.randint(0, 300)
         byte_to_write = a.to_bytes(5,'little')
         while byte:
             if(byte == b'\x0a'):
@@ -159,34 +159,153 @@ def number_of_color():
             out, err = process.communicate()
             process.terminate()
 
-def test_Gilles():
-    file1 = open('testinput.img', 'rb')
+def test_name_size():
 
-    file2 = open('newinput.img', 'wb+')
+    for i in range(10):
 
-    byte = file1.read(1)
-    file2.write(byte)
+        file1 = open('testinput.img', 'rb')
 
-    print(byte)
-
-    a = 105
-    byte_to_write = a.to_bytes(2,'little')
-    count = 0
-    while byte:
-        if(count == 1):
-            byte = file1.read(1)
-            file2.write(byte_to_write)
-            count += 1 
+        file2 = open('newinput.img', 'wb+')
 
         byte = file1.read(1)
-        file2.write(byte) 
-        count += 1
-        print(byte)
+        file2.write(byte)
+
+        a = random.randint(0, 100)
+        random_comment = random_string(a)
+        hex_string = str.encode(random_comment)
+        while byte:
+            if(byte == b'\x01'):
+                byte = file1.read(1)
+                file2.write(hex_string)
+                while byte != b'\x00':
+                    byte = file1.read(1)
+                file2.write(byte)
+            else:
+                byte = file1.read(1)
+                file2.write(byte)
+
+        file1.close()
+        file2.close()
+
+
+        ## Shell=False helps the process terminate
+        process = subprocess.Popen(["./converter", "newinput.img", "newoutput.img"], shell=False)
+    
+        ## Get exit codes
+        try:
+            out, err = process.communicate(timeout = 15)
+            errcode = process.returncode
+            if("The programe has crashed" in str(errcode)):
+                print(errcode)
+            print(errcode)
+        except TimeoutExpired:
+            process.kill() 
+            out, err = process.communicate()
+            process.terminate()
+
+def test_color_table():
+
+    for i in range(10):
+
+        file1 = open('testinput.img', 'rb')
+
+        file2 = open('newinput.img', 'wb+')
+
+        byte = file1.read(1)
+        file2.write(byte)
+
+        a = random.randint(0, 50)
+        random_comment = random_string(a*8)
+        hex_string = str.encode(random_comment)
+        while byte:
+            if(byte == b'\x0b'):
+                byte = file1.read(1)
+                file2.write(hex_string)
+                while byte != b'\x00':
+                    byte = file1.read(1)
+                file2.write(byte)
+            else:
+                byte = file1.read(1)
+                file2.write(byte)
+
+        file1.close()
+        file2.close()
+
+
+        ## Shell=False helps the process terminate
+        process = subprocess.Popen(["./converter", "newinput.img", "newoutput.img"], shell=False)
+    
+        ## Get exit codes
+        try:
+            out, err = process.communicate(timeout = 15)
+            errcode = process.returncode
+            if("The programe has crashed" in str(errcode)):
+                print(errcode)
+            print(errcode)
+        except TimeoutExpired:
+            process.kill() 
+            out, err = process.communicate()
+            process.terminate()
+
+def test_width_height():
+
+    for i in range(10):
+
+        file1 = open('testinput.img', 'rb')
+
+        file2 = open('newinput.img', 'wb+')
+
+        byte = file1.read(1)
+        file2.write(byte)
+
+        """a = random.randint(0, 300)
+        byte_to_write_a = a.to_bytes(8,'little')
+        b = random.randint(0, 300s)
+        byte_to_write_b = b.to_bytes(8,'little')"""
+        random_comment_a = random_string(8)
+        hex_string_a = str.encode(random_comment_a)
+        a = random.randint(0, 2)
+        random_comment_b = random_string(8)
+        hex_string_b = str.encode(random_comment_b)
+        while byte:
+            if(byte == b'\x02'):
+                byte = file1.read(8)
+                file2.write(hex_string_a)
+                byte = file1.read(8)
+                file2.write(hex_string_b)
+                byte = file1.read(8)
+                file2.write(byte)
+            else:
+                byte = file1.read(1)
+                file2.write(byte)
+
+        file1.close()
+        file2.close()
+
+
+        ## Shell=False helps the process terminate
+        process = subprocess.Popen(["./converter", "newinput.img", "newoutput.img"], shell=False)
+    
+        ## Get exit codes
+        try:
+            out, err = process.communicate(timeout = 15)
+            errcode = process.returncode
+            if("The programe has crashed" in str(errcode)):
+                print(errcode)
+            print(errcode)
+        except TimeoutExpired:
+            process.kill() 
+            out, err = process.communicate()
+            process.terminate()
+
 
 def test_no_io():
-    """test_input_version()"""
-    """test_comment_size()"""
-    number_of_color()
-    """test_Gilles()"""
+    test_input_version() # works and return the failure
+    """test_comment_size()""" # works and return the failure
+    """test_color_table()""" # works and return the failure
+    """test_name_size()""" # crashed very rarely Author: 09Ng *** The program has crashed *** mettre bcp de fois for 
+    
+    """test_width_height()""" # do not return the failure
+    """number_of_color()""" # do not return the failure
 
 test_no_io()
