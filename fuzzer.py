@@ -5,42 +5,25 @@ import struct
 import string
 import codecs
 import binascii
+import os
 
 def random_string(stringLength=10):
     password_characters = string.ascii_letters + string.digits + string.punctuation
     return ''.join(random.choice(password_characters) for i in range(stringLength))
 
-def to_little_endian(hex_string):
-    newword = ""
-    count = 0
-    couple = ""
-    for letter in hex_string:
-        couple += letter
-        count += 1
-        if(count % 2 == 0):
-            newword += couple
-            newword += " "
-            couple = ""
-    if(count % 2 == 1):
-        couple = '0' + couple
-        newword += couple
-
-    return newword
-
 def test_input_version():
 
-    for i in range(20):
+    crash = 0
+
+    for i in range(40):
         
         file1 = open('testinput.img', 'rb')
-
         file2 = open('newinput.img', 'wb+')
 
         byte = file1.read(1)
         file2.write(byte)
 
         a = random.randint(0, 200)
-        print('version')
-        print(a)
         byte_to_write = a.to_bytes(2,'little')
         count = 0
         while byte:
@@ -57,26 +40,30 @@ def test_input_version():
         file2.close()
 
         ## Shell=False helps the process terminate
-        process = subprocess.Popen(["./converter", "newinput.img", "testoutput.img"], shell=False)
+        process = subprocess.Popen(["./converter", "newinput.img", "testoutput.img"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
         ## Get exit codes
+        error_string = ""
         try:
-            out, err = process.communicate(timeout = 15)
-            errcode = process.returncode
-            if("The programe has crashed" in str(errcode)):
-                print(errcode)
-            print(errcode)
+            for line in process.stdout: 
+                if "*** The program has crashed ***" in str(line):
+                    crash = 1
+                    print(line)
+           
         except TimeoutExpired:
             process.kill() 
             out, err = process.communicate()
             process.terminate()
+
+        if(crash == 1):
+            os.rename('newinput.img', 'bad_version.img')
+            break
 
 def test_comment_size():
 
     for i in range(10):
 
         file1 = open('testinput.img', 'rb')
-
         file2 = open('newinput.img', 'wb+')
 
         byte = file1.read(1)
