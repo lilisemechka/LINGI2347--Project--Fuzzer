@@ -95,11 +95,11 @@ def test_comment_size():
         hex_string = str.encode(random_comment)
         while byte:
             if(byte == b'\x0c'):
+                file2.write(byte)
                 byte = file1.read(1)
                 file2.write(hex_string)
                 while byte != b'\x00':
                     byte = file1.read(1)
-
                 file2.write(byte)
             else:
                 byte = file1.read(1)
@@ -120,9 +120,10 @@ def test_name_size():
 
     print("test_name_size")
 
-    bug = 1
+    timeout = time.time() + 60
+    bug = 0
 
-    while bug:
+    while not bug:
 
         file1 = open('testinput.img', 'rb')
 
@@ -134,13 +135,16 @@ def test_name_size():
         a = random.randint(0, 1000)
         random_comment = random_string(a)
         hex_string = str.encode(random_comment)
+        count = 0
         while byte:
-            if(byte == b'\x01'):
+            if(byte == b'\x01' and count == 0):
+                file2.write(byte)
                 byte = file1.read(1)
                 file2.write(hex_string)
                 while byte != b'\x00':
                     byte = file1.read(1)
                 file2.write(byte)
+                count += 1
             else:
                 byte = file1.read(1)
                 file2.write(byte)
@@ -149,36 +153,12 @@ def test_name_size():
         file2.close()
 
         if(lunch_process('bad_name_size.img')):
+            bug = 1
+
+        if time.time() > timeout:
+            print("Test has reached the timeout")
             break
 
-def test_magic_number():
-
-    print("test_magic_number")
-
-    bug = 1
-
-    while bug:
-
-        file1 = open('testinput.img', 'rb')
-
-        file2 = open('newinput.img', 'wb+')
-
-        byte = file1.read(4)
-        file2.write(byte)
-
-        a = random.randint(0, 100)
-        random_comment = random_string(a)
-        hex_string = str.encode(random_comment)
-        file2.write(hex_string)
-        while byte:
-            byte = file1.read(1)
-            file2.write(byte)
-
-        file1.close()
-        file2.close()
-
-        if(lunch_process('bad_name_size.img')):
-            break
 
 def test_color_table():
 
@@ -203,9 +183,7 @@ def test_color_table():
             if(byte == b'\x0b'):
                 byte = file1.read(1)
                 file2.write(hex_string)
-                while byte != b'\x00':
-                    byte = file1.read(1)
-                file2.write(byte)
+                byte = file1.read(8)
             else:
                 byte = file1.read(1)
                 file2.write(byte)
@@ -217,7 +195,52 @@ def test_color_table():
         if(lunch_process('bad_color_table.img')):
             bug = 1
 
-        if(lunch_process('bad_number_of_color.img')):
+        if time.time() > timeout:
+            print("Test has reached the timeout")
+            break
+
+def test_image_table():
+
+    print("test_image_table")
+
+    timeout = time.time() + 10
+    bug = 0
+
+    while not bug:
+
+        file1 = open('testinput.img', 'rb')
+
+        file2 = open('newinput.img', 'wb+')
+
+        byte = file1.read(1)
+        file2.write(byte)
+
+        random_comment_1 = random_string(2)
+        random_comment_2 = random_string(2)
+        hex_string_1 = str.encode(random_comment_1)
+        hex_string_2 = str.encode(random_comment_2)
+        count = 0
+        while byte:
+            if(count == 40):
+                file2.write(hex_string_1)
+                file2.write(hex_string_2)
+                count += 1
+            elif(count < 40):
+                byte = file1.read(1)
+                file2.write(byte)
+                count += 1
+            else:
+                byte = file1.read(1)
+
+        file1.close()
+        file2.close()
+
+
+        if(lunch_process('bad_image_table.img')):
+            bug = 1
+
+        if time.time() > timeout:
+            print("Test has reached the timeout")
             break
 
 
@@ -226,7 +249,7 @@ def test_no_io():
     test_comment_size()  # works and return the failure
     test_color_table()   # works and return the failure
     test_name_size()     # works and return the failure
-    test_magic_number()  # works and return the failure
+    test_image_table()
 
 
 test_no_io()
