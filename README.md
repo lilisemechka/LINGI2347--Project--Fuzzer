@@ -4,7 +4,7 @@ I found 6 crashes:
 
 2) success_height.img: crashes the tool by using height = 1650.
 
-3) success_pixels.img: crashes the tool when the list of pixels contains “75”, as it is the number of the header.
+3) success_pixels.img: crashes the tool when the list of pixels contains “75” in the first place. Therefore, 75 is the header that crashes the program. Even if we put, for example, 75 instead of the header 02 that indicates the author name, it will also crash the program.
 
 4) success_version.img: crashes the tool by setting the version number to 81.
 
