@@ -26,7 +26,6 @@ def lunch_process(type_of_test):
         for line in process.stdout: 
             if "*** The program has crashed ***" in str(line):
                 crash = 1
-                print(line)
            
     except TimeoutExpired:
         process.kill() 
@@ -42,18 +41,18 @@ def lunch_process(type_of_test):
 """ tests image version"""
 def test_image_version(input):
 
-    print("test_image_version")
+    print("Test: image version")
 
     timeout = time.time() + 60
     bug = 0
 
+    version = 0
     while not bug:
 
         """ build a new input with the modified image version"""       
         file = open('newinput.img', 'wb+')
 
-        a = random.randint(0, 1000)
-        byte_to_write = a.to_bytes(2,'little')
+        byte_to_write = version.to_bytes(2,'little')
 
         for i in range(0, 9):
             """ change the image version input[1] """
@@ -63,31 +62,34 @@ def test_image_version(input):
                 file.write(input[i])
 
         file.close()
+        version += 1
 
         """ lunch the converter and, if there is a crash, stop the test """        
         if lunch_process('bad_version.img'):
+            print("program crashes with image version: " + str(version))
+            print()
             bug = 1
 
         """ if no bugs found during one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout")
+            print("Test has reached the timeout and no bugs was found")
             break
 
 
 """ tests width and height of the image """
 def test_width_height(input):
 
-    print("test_width_height")
+    print("Test: width and height of the image")
 
     timeout = time.time() + 60
     bug = 0
-    count = 0
+    width = 0
     while not bug:
  
         """ build a new input with the modified height and width of the image"""       
         file = open('newinput.img', 'wb+')
 
-        byte_to_write = count.to_bytes(4,byteorder='big')
+        byte_to_write = width.to_bytes(4,byteorder='big')
 
         for i in range(0, 9):
             if i == 3:
@@ -99,35 +101,37 @@ def test_width_height(input):
                 file.write(input[i])
 
         file.close()
-        count += 1
+        width += 1
 
         """ lunch the converter and, if there is a crash, stop the test """         
         if lunch_process('bad_width_height.img'):
+            print("program crashes with width: "  + str(width) + " and height: " + str(width))
+            print()
             bug = 1
 
         """ if no bugs found during one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout")
+            print("Test has reached the timeout and no bugs was found")
             break
 
 
 """ tests height of the image """
 def test_height(input):
 
-    print("test_height")
+    print("Test: height of the image")
 
     timeout = time.time() + 60
     bug = 0
-    count = 0
+    height = 0
     while not bug:
         
         """ build a new input with the modified height of the image """
         file = open('newinput.img', 'wb+')
 
-        byte_to_write = count.to_bytes(4,byteorder='big')
+        byte_to_write = height.to_bytes(4,byteorder='big')
 
         for i in range(0, 9):
-            """ change the comment input[3] """
+            """ change the image height input[3] """
             if i == 3:
                 file.write(b'\x02')
                 """ keep the same width """
@@ -138,33 +142,35 @@ def test_height(input):
                 file.write(input[i])
 
         file.close()
-        count += 1
+        height += 1
 
         """ lunch the converter and, if there is a crash, stop the test """    
         if lunch_process('bad_height.img'):
+            print("Program crashes with height: " + str(height))
+            print()
             bug = 1
 
         """ if no bugs found during one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout")
+            print("Test has reached the timeout and no bugs was found")
             break
 
 
 """ tests the size and the content of the comment """
 def test_comment_size(input):
 
-    print("test_comment_size")
+    print("Test: comment size")
 
     timeout = time.time() + 60
     bug = 0
+    comment_length = 0
 
     while not bug:
 
         """ build a new input with the modified comment """
         file = open('newinput.img', 'wb+')
 
-        a = random.randint(0, 10000)
-        random_comment = random_string(a)
+        random_comment = random_string(comment_length)
         hex_string = str.encode(random_comment)
 
 
@@ -178,23 +184,26 @@ def test_comment_size(input):
                 file.write(input[i])
 
         file.close()
+        comment_length += 5
 
         """ lunch the converter and, if there is a crash, stop the test """
         if lunch_process('bad_comment_size.img'):
+            print("Program crashes with comment length: " + str(comment_length))
+            print()
             bug = 1
 
         """ if no bugs found during one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout")
+            print("Test has reached the timeout and no bugs was found")
             break
 
 
-""" tests the size and the content of the name """
-def test_name_size(input):
+""" tests the content of the name """
+def test_name(input):
 
-    print("test_name_size")
+    print("Test: name")
 
-    timeout = time.time() + 30
+    timeout = time.time() + 60
     bug = 0
 
     while not bug:
@@ -215,22 +224,24 @@ def test_name_size(input):
             else:
                 file.write(input[i])
 
-        file.close()
+        file.close
 
         """ lunch the converter and, if there is a crash, stop the test """
         if lunch_process('bad_name_size.img'):
+            print("Program crashes with the name: " + str(random_comment) + " with length:" + str(a))
+            print()
             bug = 1
 
         """ if no bugs found during one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout")
+            print("Test has reached the timeout and no bugs was found")
             break
 
 
 """ tests the image pixels """
 def test_image(input):
 
-    print("test_image_pixels")
+    print("Test: pixels")
 
     timeout = time.time() + 10
     bug = 0
@@ -258,11 +269,15 @@ def test_image(input):
 
         """ lunch the converter and, if there is a crash, stop the test """
         if lunch_process('bad_image_table.img'):
+            print("Program crashes with the pixels: ")
+            print(str(hex_string_1))
+            print(str(hex_string_2))
+            print()
             bug = 1
 
         """ if no bugs found during one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout")
+            print("Test has reached the timeout and no bugs was found")
             break
 
 
@@ -289,12 +304,12 @@ def fuzzer():
 
     input = testinput()       # an input image that do not provoque any crashes
 
-    test_image_version(input) # tests the number of the image version
-    test_width_height(input)  # tests the width and the height of the image
-    test_height(input)         # tests the heights of the image
-    test_comment_size(input)  # tests the size and the content of the comment
-    test_name_size(input)     # tests the size and the content of the name
-    test_image(input)         # tests the image pixels 
+    test_image_version(input) # tests the image version
+    test_width_height(input)  # tests width and the height of the image
+    test_height(input)        # tests height of the image
+    test_comment_size(input)  # tests size of the comment
+    test_name(input)          # tests content of the name
+    test_image(input)         # tests the image's pixels 
 
 
 fuzzer()
