@@ -13,10 +13,10 @@ def random_string(stringLength=10):
     return ''.join(random.choice(password_characters) for i in range(stringLength))
 
 """ 
-lunch converter with the modified image
+launch converter with the modified image
 if there is a crash, rename the input ("type_of_test") in order to save it
 """
-def lunch_process(type_of_test):
+def launch_process(type_of_test):
 
     crash = 0
     
@@ -38,7 +38,7 @@ def lunch_process(type_of_test):
     return crash
 
 
-""" tests image version"""
+""" test image version"""
 def test_image_version(input):
 
     print("Test: image version")
@@ -64,19 +64,19 @@ def test_image_version(input):
         file.close()
         version += 1
 
-        """ lunch the converter and, if there is a crash, stop the test """        
-        if lunch_process('bad_version.img'):
+        """ launch the converter and, if there is a crash, stop the test """        
+        if launch_process('bad_version.img'):
             print("program crashes with image version: " + str(version))
             print()
             bug = 1
 
-        """ if no bugs found during one minute then stop the test """
+        """ if no bugs are found for one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout and no bugs was found")
+            print("Test has time out without findings bugs")
             break
 
 
-""" tests width and height of the image """
+""" test width and height of the image """
 def test_width_height(input):
 
     print("Test: width and height of the image")
@@ -103,19 +103,19 @@ def test_width_height(input):
         file.close()
         width += 1
 
-        """ lunch the converter and, if there is a crash, stop the test """         
-        if lunch_process('bad_width_height.img'):
+        """ launch the converter and, if there is a crash, stop the test """         
+        if launch_process('bad_width_height.img'):
             print("program crashes with width: "  + str(width) + " and height: " + str(width))
             print()
             bug = 1
 
-        """ if no bugs found during one minute then stop the test """
+        """ if no bugs are found after one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout and no bugs was found")
+            print("Test has timed out without finding bugs")
             break
 
 
-""" tests height of the image """
+""" test height of the image """
 def test_height(input):
 
     print("Test: height of the image")
@@ -144,19 +144,19 @@ def test_height(input):
         file.close()
         height += 1
 
-        """ lunch the converter and, if there is a crash, stop the test """    
-        if lunch_process('bad_height.img'):
+        """ launch the converter and, if there is a crash, stop the test """    
+        if launch_process('bad_height.img'):
             print("Program crashes with height: " + str(height))
             print()
             bug = 1
 
-        """ if no bugs found during one minute then stop the test """
+        """ if no bugs are found after one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout and no bugs was found")
+            print("Test has timed out without finding bugs")
             break
 
 
-""" tests the size and the content of the comment """
+""" test the size and the content of the comment """
 def test_comment_size(input):
 
     print("Test: comment size")
@@ -186,19 +186,19 @@ def test_comment_size(input):
         file.close()
         comment_length += 5
 
-        """ lunch the converter and, if there is a crash, stop the test """
-        if lunch_process('bad_comment_size.img'):
+        """ launch the converter and, if there is a crash, stop the test """
+        if launch_process('bad_comment_size.img'):
             print("Program crashes with comment length: " + str(comment_length))
             print()
             bug = 1
 
         """ if no bugs found during one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout and no bugs was found")
+            print("Test has timed out without finding bugs")
             break
 
 
-""" tests the content of the name """
+""" test the content of the name """
 def test_name(input):
 
     print("Test: name")
@@ -226,19 +226,19 @@ def test_name(input):
 
         file.close
 
-        """ lunch the converter and, if there is a crash, stop the test """
-        if lunch_process('bad_name_size.img'):
+        """ launch the converter and, if there is a crash, stop the test """
+        if launch_process('bad_name_size.img'):
             print("Program crashes with the name: " + str(random_comment) + " with length:" + str(a))
             print()
             bug = 1
 
-        """ if no bugs found during one minute then stop the test """
+        """ if no bugs are found after one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout and no bugs was found")
+            print("Test has timed out without finding bugs")
             break
 
 
-""" tests the image pixels """
+""" test the image pixels """
 def test_image(input):
 
     print("Test: pixels")
@@ -267,22 +267,22 @@ def test_image(input):
 
         file.close()
 
-        """ lunch the converter and, if there is a crash, stop the test """
-        if lunch_process('bad_image_table.img'):
+        """ launch the converter and, if there is a crash, stop the test """
+        if launch_process('bad_image_table.img'):
             print("Program crashes with the pixels: ")
             print(str(hex_string_1))
             print(str(hex_string_2))
             print()
             bug = 1
 
-        """ if no bugs found during one minute then stop the test """
+        """ if no bugs are found after one minute then stop the test """
         if time.time() > timeout:
-            print("Test has reached the timeout and no bugs was found")
+            print("Test has timed out without finding bugs")
             break
 
 
 """
-produce an input that do not produce any crashes
+produce an input that does not produce any crashes
 a[0] = AB CD (magic number)
 a[1] = 64 00 (version)
 a[2] = 01 52 61 6D 69 6E 00 (author name "Ramin")
@@ -299,10 +299,10 @@ def testinput():
     a = [b'\xab\xcd', b'd\x00', b'\x01\x52\x61\x6d\x69\x6e\x00', b'\x02\x02\x00\x00\x00\x02\x00\x00\x00', b'\x0a\x02\x00\x00\x00', b'\x0b\x00\x00\x00\x00\xff\xff\xff\x00', b'\x0c\x48\x65\x6c\x6c\x6f\x00', b'\x00\x01', b'\x01\x00']
     return a
 
-"""main function that lunches different tests"""
+"""main function that launches different tests"""
 def fuzzer():
 
-    input = testinput()       # an input image that do not provoque any crashes
+    input = testinput()       # an input image that do not cause any crashes
 
     test_image_version(input) # tests the image version
     test_width_height(input)  # tests width and the height of the image
